@@ -29,7 +29,6 @@ export default function Page() {
                 </Link>
               </p>
 
-              {/* FORM ONLY */}
               <LoginForm />
             </div>
           </div>

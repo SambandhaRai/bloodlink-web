@@ -5,8 +5,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { loginSchema, type LoginType } from "../schema/login-schema";
 import { useTransition } from "react";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,7 +23,7 @@ export default function LoginForm() {
   const submit = async (data: LoginType) => {
     setTransition(async () => {
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      // router.push("/");
+      router.push("/home");
     });
 
     console.log("Login Data:", data);
