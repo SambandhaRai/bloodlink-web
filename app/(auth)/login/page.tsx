@@ -16,7 +16,7 @@ export default function Page() {
               className="absolute left-6 top-6 inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
               aria-label="Go back"
             >
-              {/* If you want it to actually go back, wrap in Link or use router.back() */}
+              
               <ArrowLeft className="h-5 w-5 text-red-700" />
             </button>
 
