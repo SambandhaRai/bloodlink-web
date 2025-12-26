@@ -1,9 +1,13 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import RegisterForm from "../_components/register-form";
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
+  const router = useRouter();
   return (
     <div className="min-h-screen bg-red-800 flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-5xl rounded-2xl bg-white shadow-2xl overflow-hidden">
@@ -13,12 +17,11 @@ export default function Page() {
             {/* Back button */}
             <button
               type="button"
+              onClick={() => router.back()}
               className="absolute left-6 top-6 inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
               aria-label="Go back"
             >
-              <Link href={"/login"}>
                 <ArrowLeft className="h-5 w-5 text-red-700" />
-              </Link>
             </button>
 
             <div className="mx-auto max-w-md pt-8">
