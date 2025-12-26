@@ -16,14 +16,15 @@ export default function Page() {
               className="absolute left-6 top-6 inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-gray-100"
               aria-label="Go back"
             >
-              
-              <ArrowLeft className="h-5 w-5 text-red-700" />
+              <Link href={'/'}>
+                <ArrowLeft className="h-5 w-5 text-red-700" />
+              </Link>
             </button>
 
             <div className="mx-auto max-w-md pt-8">
               <h1 className="text-3xl font-semibold text-black">Login</h1>
               <p className="text-sm font-extralight mt-2 text-gray-400">
-                Don&apos;t have an account?{" "}
+                Don't have an account?{" "}
                 <Link href="/register" className="text-sm font-semibold text-red-800 underline">
                   Sign Up
                 </Link>
