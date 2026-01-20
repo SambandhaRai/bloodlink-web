@@ -7,6 +7,7 @@ import { loginSchema, type LoginType } from "../schema/login-schema";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/lib/actions/auth-action";
+import { toast } from "sonner";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -21,20 +22,18 @@ export default function LoginForm() {
 
   const [pending, setTransition] = useTransition();
 
-  const [error, setError] = useState("");
-
   const submit = async (data: LoginType) => {
-    setError("");
     try{
       const res = await handleLogin(data);
       if(!res.success) {
         throw new Error(res.message || "Login Failed");
       }
+      toast.success("Login Successful! Redirecting to Home Page...")
       setTransition(() => {
         router.push("/");
       });
     } catch (err: Error | any) {
-      setError(err.message || "Login Failed");
+      toast.error(err.message || "Failed to Login");
     }
   };
 

@@ -8,23 +8,32 @@ import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { handleRegister } from "@/lib/actions/auth-action";
 import { handleGetAllBloodGroups } from "@/lib/actions/bloodGroup-action";
+import { toast } from "sonner";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [pending, setTransition] = useTransition();
-
+  
   type BloodGroup = { _id: string; bloodGroup: string };
 
   const [bloodGroups, setBloodGroups] = useState<BloodGroup[]>([]);
   const [bgLoading, setBgLoading] = useState(false);
-
+  
   useEffect(() => {
     (async () => {
-      setBgLoading(true);
-      const res = await handleGetAllBloodGroups();
-      if (res.success) setBloodGroups(res.data);
-      else setError(res.message || "Failed to fetch blood groups");
-      setBgLoading(false);
+      try {
+        setBgLoading(true);
+        const res = await handleGetAllBloodGroups();
+        if (res.success) {
+          setBloodGroups(res.data);
+        } else {
+          console.error("Failed to fetch blood groups:", res.message);
+        }
+      } catch (err) {
+        console.error("Blood group fetch crashed:", err);
+      } finally {
+        setBgLoading(false);
+      }
     })();
   }, []);
 
@@ -37,20 +46,18 @@ export default function RegisterForm() {
     mode: "onSubmit",
   });
 
-  const [error, setError] = useState("");
-
   const submit = async (data: RegisterType) => {
-    setError("");
     try {
       const res = await handleRegister(data);
       if(!res.success){
         throw new Error(res.message || "Registration Failed");
       }
+      toast.success("Registration successful! Redirecting to Login Page....");
       setTransition(() => {
         router.push("/login");
       });
     } catch (err: Error | any) {
-      setError(err.message || "Registration Failed");
+      toast.error(err.message || "Registration Failed.");
     }
   };
 
