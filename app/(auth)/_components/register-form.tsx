@@ -4,12 +4,29 @@ import { ChevronDown } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema, type RegisterType } from "../schema/register-schema";
-import { useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { handleRegister } from "@/lib/actions/auth-action";
+import { handleGetAllBloodGroups } from "@/lib/actions/bloodGroup-action";
 
 export default function RegisterForm() {
   const router = useRouter();
   const [pending, setTransition] = useTransition();
+
+  type BloodGroup = { _id: string; bloodGroup: string };
+
+  const [bloodGroups, setBloodGroups] = useState<BloodGroup[]>([]);
+  const [bgLoading, setBgLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      setBgLoading(true);
+      const res = await handleGetAllBloodGroups();
+      if (res.success) setBloodGroups(res.data);
+      else setError(res.message || "Failed to fetch blood groups");
+      setBgLoading(false);
+    })();
+  }, []);
 
   const {
     register,
@@ -20,13 +37,21 @@ export default function RegisterForm() {
     mode: "onSubmit",
   });
 
-  const submit = async (data: RegisterType) => {
-    setTransition(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      router.push("/login");
-    });
+  const [error, setError] = useState("");
 
-    console.log("VALID DATA:", data);
+  const submit = async (data: RegisterType) => {
+    setError("");
+    try {
+      const res = await handleRegister(data);
+      if(!res.success){
+        throw new Error(res.message || "Registration Failed");
+      }
+      setTransition(() => {
+        router.push("/login");
+      });
+    } catch (err: Error | any) {
+      setError(err.message || "Registration Failed");
+    }
   };
 
   return (
@@ -55,6 +80,21 @@ export default function RegisterForm() {
             focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-sm place-holder:font-light placeholder:text-gray-400"
         />
         {errors.dob && <p className="mt-1 text-red-500">{errors.dob.message}</p>}
+      </div>
+
+      {/* Phone Number */}
+      <div>
+        <label className="text-sm font-medium text-gray-400 mx-0.5">Phone Number</label>
+        <input
+          type="text"
+          placeholder="98XXXXXXXX"
+          {...register("phoneNumber")}
+          className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
+            focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-sm placeholder:text-gray-400"
+        />
+        {errors.phoneNumber && (
+          <p className="mt-1 text-red-500">{errors.phoneNumber.message}</p>
+        )}
       </div>
 
       {/* Gender */}
@@ -96,7 +136,7 @@ export default function RegisterForm() {
 
         <div className="relative">
           <select
-            {...register("bloodGroup")}
+            {...register("bloodId")}
             defaultValue=""
             className="
               w-full
@@ -110,23 +150,21 @@ export default function RegisterForm() {
             "
           >
             <option value="" disabled>
-              Select your blood group
+              {bgLoading ? "Loading blood groups..." : "Select your blood group"}
             </option>
-            <option value="A+">A+</option>
-            <option value="A-">A-</option>
-            <option value="B+">B+</option>
-            <option value="B-">B-</option>
-            <option value="O+">O+</option>
-            <option value="O-">O-</option>
-            <option value="AB+">AB+</option>
-            <option value="AB-">AB-</option>
+
+            {bloodGroups.map((bg) => (
+              <option key={bg._id} value={bg._id}>
+                {bg.bloodGroup}
+              </option>
+            ))}
           </select>
 
           <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
             <ChevronDown className="h-4 w-4 text-gray-500" />
           </div>
         </div>
-        {errors.bloodGroup && <p className="mt-1 text-red-500">{errors.bloodGroup.message}</p>}
+        {errors.bloodId && <p className="mt-1 text-red-500">{errors.bloodId.message}</p>}
       </div>
 
       {/* Health Condition */}
@@ -170,7 +208,7 @@ export default function RegisterForm() {
 
       {/* Confirm Password */}
       <div>
-        <label className="text-sm font-medium text-gray-400 mx-0.5">Password</label>
+        <label className="text-sm font-medium text-gray-400 mx-0.5">Confirm Password</label>
         <input
           type="password"
           placeholder="xxxxxx"
