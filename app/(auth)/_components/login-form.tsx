@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { handleLogin } from "@/lib/actions/auth-action";
 import { toast } from "sonner";
 import { useAuth } from "@/context/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function LoginForm() {
 
   const [pending, setTransition] = useTransition();
   const { checkAuth } = useAuth();
+  const [showPassword, setShowPassword] = useState(false)
 
   const submit = async (data: LoginType) => {
     try{
@@ -57,13 +59,28 @@ export default function LoginForm() {
       {/* Password */}
       <div>
         <label className="text-sm font-medium text-gray-400 mx-0.5">Password</label>
-        <input
-          type="password"
-          {...register("password")}
-          className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
-          focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black"
-        />
-        {errors.password && <p className="mt-1 text-red-500">{errors.password.message}</p>}
+        <div className="relative mt-2">
+          <input
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            placeholder="••••••••"
+            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 pr-12 text-sm outline-none
+              focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword((prev) => !prev)}
+            aria-label={showPassword ? "Hide password" : "Show password"}
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-500
+              hover:bg-gray-100 hover:text-gray-700 active:scale-95"
+          >
+            {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+          </button>
+        </div>
+
+        {errors.password && (
+          <p className="mt-1 text-sm text-red-500">{errors.password.message}</p>
+        )}
       </div>
 
       {/* Remember me / Forgot pw */}
