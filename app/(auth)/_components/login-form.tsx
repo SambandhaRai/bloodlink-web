@@ -8,6 +8,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/lib/actions/auth-action";
 import { toast } from "sonner";
+import { useAuth } from "@/context/AuthContext";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -21,6 +22,7 @@ export default function LoginForm() {
   });
 
   const [pending, setTransition] = useTransition();
+  const { checkAuth } = useAuth();
 
   const submit = async (data: LoginType) => {
     try{
@@ -28,9 +30,10 @@ export default function LoginForm() {
       if(!res.success) {
         throw new Error(res.message || "Login Failed");
       }
+      await checkAuth();
       toast.success("Login Successful! Redirecting to Home Page...")
       setTransition(() => {
-        router.push("/");
+        router.push("/home");
       });
     } catch (err: Error | any) {
       toast.error(err.message || "Failed to Login");
