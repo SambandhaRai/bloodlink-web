@@ -13,22 +13,34 @@ export async function proxy(request: NextRequest) {
     const isPublicRoute = publicRoutes.some(route => pathname.startsWith(route));
     const isAdminRoute = adminRoutes.some(route => pathname.startsWith(route));
     const isUserRoute = userRoutes.some(route => pathname.startsWith(route));
+    const isHomeRoute = pathname === "/";
 
-    if(!token && !isPublicRoute) {
+    if (!token && (isAdminRoute || isUserRoute)) {
         return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    if(token && user) {
-        if(isAdminRoute && user.role !== "admin") {
-            return NextResponse.redirect(new URL("/", request.url));
+    if (token && user) {
+        if (user.role === "admin") {
+            if (isHomeRoute || isPublicRoute || isUserRoute) {
+                return NextResponse.redirect(new URL("/admin", request.url));
+            }
         }
-
-        if(isUserRoute && user.role !== "user" && user.role !== "admin") {
-            return NextResponse.redirect(new URL("/", request.url));
+        
+        if (user.role === "user") {
+            if (isAdminRoute) {
+                return NextResponse.redirect(new URL("/user/home", request.url));
+            }
+            if (isPublicRoute) {
+                return NextResponse.redirect(new URL("/user/home", request.url));
+            }
+            // optional: prevent user from going to "/"
+            if (isHomeRoute) {
+                return NextResponse.redirect(new URL("/user/home", request.url));
+            }
         }
     }
 
-    if(isPublicRoute && token) {
+    if (isPublicRoute && token && !user) {
         return NextResponse.redirect(new URL("/", request.url));
     }
 
@@ -37,6 +49,7 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
     matcher: [
+        "/",
         "/admin/:path*",
         "/user/:path*",
         "/login",
