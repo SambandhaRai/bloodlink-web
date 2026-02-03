@@ -1,6 +1,6 @@
 "use server";
 
-import { getAllBloodGroups, getBloodGroupById } from "../api/bloodGroup";
+import { getAllBloodGroups, getBloodGroupById } from "../../api/admin/bloodGroup";
 
 export const handleGetAllBloodGroups = async () => {
     try {

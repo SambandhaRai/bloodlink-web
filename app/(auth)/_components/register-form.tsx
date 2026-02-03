@@ -7,7 +7,7 @@ import { registerSchema, type RegisterType } from "../schema/register-schema";
 import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { handleRegister } from "@/lib/actions/auth-action";
-import { handleGetAllBloodGroups } from "@/lib/actions/bloodGroup-action";
+import { handleGetAllBloodGroups } from "@/lib/actions/admin/bloodGroup-action";
 import { toast } from "sonner";
 import { Eye, EyeOff } from "lucide-react";
 
