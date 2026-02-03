@@ -1,5 +1,5 @@
-import axios from "./axios";
-import { API } from "./endpoints";
+import axios from "../axios";
+import { API } from "../endpoints";
 
 export const getAllBloodGroups = async () => {
     try{
