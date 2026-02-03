@@ -11,7 +11,7 @@ export const getProfile = async () => {
         throw new Error(
             err.response?.data?.message 
             || err.message 
-            || "Fetch WhoAmI Failed" 
+            || "Profile Fetch Failed" 
         );
     }
 }

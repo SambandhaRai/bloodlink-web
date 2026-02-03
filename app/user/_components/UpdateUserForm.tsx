@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { ChevronDown, X } from "lucide-react";
 import Image from "next/image";
 import { toast } from "sonner";
-
+import { useRouter } from "next/navigation";
 import { updateUserSchema, type UpdateUserType } from "../schema/update-user-schema";
 import { handleGetAllBloodGroups } from "@/lib/actions/admin/bloodGroup-action";
 import { handleUpdateUserProfile } from "@/lib/actions/user/user-action";
@@ -24,7 +24,7 @@ function toDateInputValue(d: string | Date | undefined) {
 }
 
 const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-const UPLOADS_PATH = "/"; 
+const UPLOADS_PATH = "/uploads/";
 
 function getProfilePictureSrc(profilePicture?: string) {
   if (!profilePicture) return null;
@@ -37,7 +37,6 @@ function getProfilePictureSrc(profilePicture?: string) {
     return apiBase ? `${apiBase}${profilePicture}` : profilePicture;
   }
 
-  // filename only
   if (!apiBase) return null;
   return `${apiBase}${UPLOADS_PATH}${profilePicture}`;
 }
@@ -49,11 +48,19 @@ export default function UpdateUserForm({
   user: any;
   showRole?: boolean;
 }) {
+  const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [bloodGroups, setBloodGroups] = useState<BloodGroup[]>([]);
   const [bgLoading, setBgLoading] = useState(false);
+
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+
+  // used to bust cache after successful upload/update
+  const [imgVersion, setImgVersion] = useState<number>(Date.now());
+
+  // fallback if next/image fails to load
+  const [imgError, setImgError] = useState(false);
 
   const {
     register,
@@ -102,7 +109,11 @@ export default function UpdateUserForm({
       email: user?.email || "",
       profilePicture: undefined,
     });
+
     setPreviewImage(null);
+    setImgError(false);
+    setImgVersion(Date.now());
+
     if (fileInputRef.current) fileInputRef.current.value = "";
   }, [user, reset]);
 
@@ -112,9 +123,16 @@ export default function UpdateUserForm({
       onChange(undefined);
       return;
     }
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Only image files are allowed.");
+      return;
+    }
+
     const reader = new FileReader();
     reader.onloadend = () => setPreviewImage(reader.result as string);
     reader.readAsDataURL(file);
+
     onChange(file);
   };
 
@@ -151,13 +169,24 @@ export default function UpdateUserForm({
       if (!res.success) throw new Error(res.message || "Update failed");
 
       toast.success("Profile updated successfully!");
+
+      // clear preview + file input
       dismissImage();
+
+      // bust image cache (same filename sometimes)
+      setImgError(false);
+      setImgVersion(Date.now());
+
+      // re-fetch server component data
+      router.refresh();
     } catch (err: any) {
       toast.error(err?.message || "Profile update failed.");
     }
   };
 
-  const profileSrc = getProfilePictureSrc(user?.profilePicture);
+  const baseProfileSrc = getProfilePictureSrc(user?.profilePicture);
+
+  const profileSrc = baseProfileSrc ? `${baseProfileSrc}?v=${imgVersion}` : null;
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="mt-5 space-y-5 text-start">
@@ -168,10 +197,22 @@ export default function UpdateUserForm({
         <div className="mt-3 flex items-center gap-4">
           <div className="relative h-16 w-16 overflow-hidden rounded-full border border-gray-200 bg-gray-100">
             {previewImage ? (
-              // eslint-disable-next-line @next/next/no-img-element
               <img src={previewImage} alt="Preview" className="h-full w-full object-cover" />
             ) : profileSrc ? (
-              <Image src={profileSrc} alt="Profile" fill className="object-cover" />
+              imgError ? (
+                // fallback if next/image fails
+                <img src={profileSrc} alt="Profile" className="h-full w-full object-cover" />
+              ) : (
+                <Image
+                  src={profileSrc}
+                  alt="Profile"
+                  fill
+                  sizes="64px"
+                  className="object-cover"
+                  onError={() => setImgError(true)}
+                  unoptimized
+                />
+              )
             ) : (
               <div className="h-full w-full flex items-center justify-center text-xs text-gray-500">
                 No Image
@@ -222,7 +263,7 @@ export default function UpdateUserForm({
         <input
           {...register("fullName")}
           className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
-            focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
+          focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
         />
         {errors.fullName && <p className="mt-1 text-red-500">{errors.fullName.message}</p>}
       </div>
@@ -234,7 +275,7 @@ export default function UpdateUserForm({
           type="date"
           {...register("dob")}
           className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
-            focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black"
+          focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black"
         />
         {errors.dob && <p className="mt-1 text-red-500">{errors.dob.message}</p>}
       </div>
@@ -246,7 +287,7 @@ export default function UpdateUserForm({
           {...register("phoneNumber")}
           placeholder="98XXXXXXXX"
           className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
-            focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
+          focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
         />
         {errors.phoneNumber && <p className="mt-1 text-red-500">{errors.phoneNumber.message}</p>}
       </div>
@@ -258,7 +299,7 @@ export default function UpdateUserForm({
           <select
             {...register("gender")}
             className="w-full appearance-none rounded-lg border border-gray-200 px-4 py-2.5 pr-10
-              text-sm text-gray-700 focus:border-red-600 focus:ring-2 focus:ring-red-100"
+            text-sm text-gray-700 focus:border-red-600 focus:ring-2 focus:ring-red-100"
           >
             <option value="" disabled>
               Select gender
@@ -282,7 +323,7 @@ export default function UpdateUserForm({
           <select
             {...register("bloodId")}
             className="w-full appearance-none rounded-lg border border-gray-200 px-4 py-2.5 pr-10
-              text-sm text-gray-700 focus:border-red-600 focus:ring-2 focus:ring-red-100"
+            text-sm text-gray-700 focus:border-red-600 focus:ring-2 focus:ring-red-100"
           >
             <option value="" disabled>
               {bgLoading ? "Loading blood groups..." : "Select your blood group"}
@@ -311,7 +352,7 @@ export default function UpdateUserForm({
           rows={4}
           {...register("healthCondition")}
           className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-black resize-none
-            outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 placeholder:text-gray-400"
+          outline-none focus:border-red-600 focus:ring-2 focus:ring-red-100 placeholder:text-gray-400"
         />
       </div>
 
@@ -322,7 +363,7 @@ export default function UpdateUserForm({
           type="email"
           {...register("email")}
           className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
-            focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
+          focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
         />
         {errors.email && <p className="mt-1 text-red-500">{errors.email.message}</p>}
       </div>
