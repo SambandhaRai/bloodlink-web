@@ -33,10 +33,17 @@ export default function LoginForm() {
         throw new Error(res.message || "Login Failed");
       }
       await checkAuth();
-      toast.success("Login Successful! Redirecting to Home Page...")
-      setTransition(() => {
-        router.push("/home");
-      });
+      if (res.success) {
+        if (res.data?.role == 'admin') {
+          toast.success("Login Successful! Redirecting to Admin Home Page...");
+          return router.replace("/admin");
+        }
+        if (res.data?.role === 'user') {
+          toast.success("Login Successful! Redirecting to Home Page...");
+          return router.replace("/user/home");
+        }
+        return router.replace("/");
+      }
     } catch (err: Error | any) {
       toast.error(err.message || "Failed to Login");
     }
