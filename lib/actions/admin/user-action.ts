@@ -19,11 +19,11 @@ export async function handleGetAllUsers(params: {
         if(response.success) {
             return {
                 success: true,
-                users: response.data,
+                data: response.data,
                 pagination: response.pagination
             }
         }
-        return { success: false, users: [], pagination: null };
+        return { success: false, data: [], pagination: null };
     } catch (err: Error | any) {
         throw new Error(
             err.message || "Failed to fetch users"
