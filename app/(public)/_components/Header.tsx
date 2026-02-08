@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const NAV_LINKS = [
     { href: "/", label: "Home" },
@@ -13,11 +13,28 @@ const NAV_LINKS = [
 export default function Header() {
     const pathname = usePathname();
     const [open, setOpen] = useState(false);
+    const [scrolled, setScrolled] = useState(false);
 
     const isActive = (href: string) => (href === "/" ? pathname === "/" : pathname?.startsWith(href));
 
+    useEffect(() => {
+        const onScroll = () => {
+            setScrolled(window.scrollY > 20);
+        };
+
+        window.addEventListener("scroll", onScroll);
+        return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
     return (
-        <header className="sticky top-0 z-50 bg-white backdrop-blur border-b border-black/10 dark:border-white/10">
+        <header className={`
+            sticky top-0 z-50 transition-all duration-300 
+                ${
+                    scrolled
+                    ? "bg-white shadow-sm border-b border-black/10"
+                    : "bg-transparent"
+                }
+            `}>
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Global">
                 <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr] w-full">
                     {/* Left: Logo */}
