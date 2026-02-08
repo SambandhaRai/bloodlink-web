@@ -57,6 +57,7 @@ export default function LoginForm() {
         <input
           type="email"
           {...register("email")}
+          placeholder="abc@email.com"
           className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
           focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black"
         />
