@@ -7,7 +7,7 @@ import { loginSchema, type LoginType } from "../schema/login-schema";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/lib/actions/auth-action";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
 import { Eye, EyeOff } from "lucide-react";
 
@@ -101,7 +101,7 @@ export default function LoginForm() {
           Remember Me
         </label>
 
-        <Link href="/forgotpassword" className="text-sm font-semibold text-red-800 underline">
+        <Link href="/forgot-password" className="text-sm font-semibold text-red-800 underline">
           Forgot password?
         </Link>
       </div>

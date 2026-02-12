@@ -8,7 +8,7 @@ import { useState, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { handleRegister } from "@/lib/actions/auth-action";
 import { handleGetAllBloodGroups } from "@/lib/actions/admin/bloodGroup-action";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { Eye, EyeOff } from "lucide-react";
 
 export default function RegisterForm() {
