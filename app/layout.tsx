@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Bricolage_Grotesque } from "next/font/google";
-import { Toaster } from "sonner";
+import { ToastContainer } from "react-toastify";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 
@@ -28,9 +28,8 @@ export default function RootLayout({
           {children}
         </AuthProvider>
 
-        <Toaster
+        <ToastContainer
           position="top-right"
-          richColors
           closeButton
         />
       </body>
