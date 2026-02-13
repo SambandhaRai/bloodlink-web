@@ -65,7 +65,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
           {/* Password */}
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Password
+              New Password
             </label>
 
             <div className="mt-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 focus-within:border-red-600 focus-within:ring-2 focus-within:ring-red-100">
@@ -97,7 +97,7 @@ export default function ResetPasswordForm({ token }: { token: string }) {
           {/* Confirm Password */}
           <div>
             <label className="text-sm font-medium text-gray-700">
-              Confirm password
+              Confirm New Password
             </label>
 
             <div className="mt-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 focus-within:border-red-600 focus-within:ring-2 focus-within:ring-red-100">

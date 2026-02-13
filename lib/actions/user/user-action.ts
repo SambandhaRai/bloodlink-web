@@ -3,7 +3,6 @@
 import { getProfile, requestPasswordReset, resetPassword, updateUserProfile } from "@/lib/api/user/user";
 import { setUserData } from "@/lib/cookie";
 import { revalidatePath } from "next/cache";
-import { email } from "zod";
 
 export const handleGetProfile = async () => {
     try {
