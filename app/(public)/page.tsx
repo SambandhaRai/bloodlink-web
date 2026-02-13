@@ -30,14 +30,14 @@ export default function Home() {
 
               <div className="mt-25 flex flex-wrap gap-4">
                 <Link
-                  href="#"
+                  href="/register"
                   className="rounded-full bg-[#A11D2C] px-6 py-3 text-white font-semibold hover:opacity-95 transition"
                 >
                   Become a Donor
                 </Link>
 
                 <Link
-                  href="#"
+                  href="/register"
                   className="rounded-full border border-black/30 px-6 py-3 font-semibold text-black/80 hover:bg-black/5 transition"
                 >
                   Request Blood
@@ -62,7 +62,7 @@ export default function Home() {
       </section>
 
       {/* OUR AIM */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-26">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-30">
           <div>
             <p className="text-sm tracking-[0.25em] font-semibold text-black/50">
               OUR AIM
@@ -86,7 +86,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="mt-15 flex justify-center">
+        <div className="mt-20 flex justify-center">
           <Image
             src="/images/donors-illustration.png"
             alt="Donors illustration"
@@ -100,7 +100,7 @@ export default function Home() {
       </section>
 
       {/* WHY DONATE */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-15">
         <div className="text-center">
           <h3 className="text-black text-2xl sm:text-3xl font-extrabold">
             Why Donate Blood?
