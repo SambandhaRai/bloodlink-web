@@ -267,22 +267,37 @@ export default function UpdateUserForm({
             render={({ field: { onChange } }) => (
               <>
                 {/* Avatar (clickable) */}
-                <button
-                  type="button"
+                <div
+                  role="button"
+                  tabIndex={0}
                   onClick={() => fileInputRef.current?.click()}
-                  className="group relative h-28 w-28 sm:h-32 sm:w-32 outline-none
-                  hover:opacity-95 focus-visible:ring-2 focus-visible:ring-red-200"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      fileInputRef.current?.click();
+                    }
+                  }}
+                  className="group relative h-28 w-28 sm:h-32 sm:w-32 outline-none cursor-pointer
+  hover:opacity-95 focus-visible:ring-2 focus-visible:ring-red-200"
                   aria-label="Change profile picture"
                 >
                   {/* OUTER RING (no overflow hidden, so icon can sit outside) */}
                   <div className="relative h-full w-full rounded-full border-4 border-white bg-transparent shadow-lg ring-1 ring-black/5">
-                    {/* INNER IMAGE CLIP (this is where overflow-hidden should be) */}
+                    {/* INNER IMAGE CLIP */}
                     <div className="relative h-full w-full overflow-hidden rounded-full bg-gray-100">
                       {previewImage ? (
-                        <img src={previewImage} alt="Preview" className="h-full w-full object-cover" />
+                        <img
+                          src={previewImage}
+                          alt="Preview"
+                          className="h-full w-full object-cover"
+                        />
                       ) : profileSrc ? (
                         imgError ? (
-                          <img src={profileSrc} alt="Profile" className="h-full w-full object-cover" />
+                          <img
+                            src={profileSrc}
+                            alt="Profile"
+                            className="h-full w-full object-cover"
+                          />
                         ) : (
                           <Image
                             src={profileSrc}
@@ -300,11 +315,10 @@ export default function UpdateUserForm({
                         </div>
                       )}
 
-                      {/* hover overlay */}
                       <div className="pointer-events-none absolute inset-0 bg-black/0 transition group-hover:bg-black/10" />
                     </div>
 
-                    {/* ✅ Edit icon OUTSIDE the clipped area */}
+                    {/* Edit icon */}
                     <div className="absolute -bottom-2 -right-2 grid h-10 w-10 place-items-center rounded-full bg-red-800 text-white shadow-lg ring-4 ring-white transition group-hover:bg-red-700">
                       <Pencil size={16} />
                     </div>
@@ -324,8 +338,7 @@ export default function UpdateUserForm({
                       </button>
                     )}
                   </div>
-                </button>
-
+                </div>
 
                 {/* Hidden input */}
                 <input
