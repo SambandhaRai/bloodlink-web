@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import RegisterForm from "../_components/register-form";
+import RegisterForm from "../../_components/register-form";
 
 export default function Page() {
   const router = useRouter();

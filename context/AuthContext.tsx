@@ -3,7 +3,7 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from "react";
 import { clearAuthCookies, getAuthToken, getUserData } from "@/lib/cookie";
 import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 
 interface AuthContextProps {
     isAuthenticated: boolean;

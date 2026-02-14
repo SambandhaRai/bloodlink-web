@@ -15,7 +15,7 @@ export default async function Page({
     const result = await handleGetAllUsers({ page, size, search });
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 bg-white">
-            <UsersTable users={result.users || []} pagination={result.pagination} search={search} />
+            <UsersTable users={result.data || []} pagination={result.pagination} search={search} />
         </div>
     );
 }

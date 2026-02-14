@@ -7,9 +7,9 @@ import { loginSchema, type LoginType } from "../schema/login-schema";
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { handleLogin } from "@/lib/actions/auth-action";
-import { toast } from "sonner";
+import { toast } from "react-toastify";
 import { useAuth } from "@/context/AuthContext";
-import { Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock } from "lucide-react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -24,21 +24,21 @@ export default function LoginForm() {
 
   const [pending, setTransition] = useTransition();
   const { checkAuth } = useAuth();
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword, setShowPassword] = useState(false);
 
   const submit = async (data: LoginType) => {
-    try{
+    try {
       const res = await handleLogin(data);
-      if(!res.success) {
+      if (!res.success) {
         throw new Error(res.message || "Login Failed");
       }
       await checkAuth();
       if (res.success) {
-        if (res.data?.role == 'admin') {
+        if (res.data?.role == "admin") {
           toast.success("Login Successful! Redirecting to Admin Home Page...");
           return router.replace("/admin");
         }
-        if (res.data?.role === 'user') {
+        if (res.data?.role === "user") {
           toast.success("Login Successful! Redirecting to Home Page...");
           return router.replace("/user/home");
         }
@@ -54,32 +54,41 @@ export default function LoginForm() {
       {/* Email */}
       <div>
         <label className="text-sm font-medium text-gray-400 mx-0.5">Email</label>
-        <input
-          type="email"
-          {...register("email")}
-          className="mt-2 w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none
-          focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black"
-        />
+
+        <div className="mt-2 flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none
+          focus-within:border-red-600 focus-within:ring-2 focus-within:ring-red-100">
+          <Mail className="h-5 w-5 text-gray-400" />
+
+          <input
+            type="email"
+            {...register("email")}
+            placeholder="abc@email.com"
+            className="w-full bg-transparent text-sm text-black outline-none placeholder:text-gray-400"
+          />
+        </div>
+
         {errors.email && <p className="mt-1 text-red-500">{errors.email.message}</p>}
       </div>
 
       {/* Password */}
       <div>
         <label className="text-sm font-medium text-gray-400 mx-0.5">Password</label>
-        <div className="relative mt-2">
+
+        <div className="mt-2 flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm outline-none
+          focus-within:border-red-600 focus-within:ring-2 focus-within:ring-red-100">
+          <Lock className="h-5 w-5 text-gray-400" />
+
           <input
             type={showPassword ? "text" : "password"}
             {...register("password")}
             placeholder="••••••••"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2.5 pr-12 text-sm outline-none
-              focus:border-red-600 focus:ring-2 focus:ring-red-100 text-black placeholder:text-gray-400"
+            className="w-full bg-transparent text-sm text-black outline-none placeholder:text-gray-400"
           />
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
             aria-label={showPassword ? "Hide password" : "Show password"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-gray-500
-              hover:bg-gray-100 hover:text-gray-700 active:scale-95"
+            className="rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-gray-700 active:scale-95"
           >
             {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
@@ -100,7 +109,7 @@ export default function LoginForm() {
           Remember Me
         </label>
 
-        <Link href="/forgotpassword" className="text-sm font-semibold text-red-800 underline">
+        <Link href="/forgot-password" className="text-sm font-semibold text-red-800 underline">
           Forgot password?
         </Link>
       </div>

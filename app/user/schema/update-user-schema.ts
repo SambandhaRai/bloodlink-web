@@ -18,7 +18,7 @@ export const updateUserSchema = z.object({
   gender: z.string().trim().optional(),
   bloodId: z.string().trim().optional(),
   healthCondition: z.string().optional(),
-  email: z.string().email("Invalid email").optional(),
+  email: z.email().optional(),
   password: z.string().trim().min(6, "Password can't be less than 6 characters").optional(),
   profilePicture: z
     .instanceof(File)
