@@ -13,6 +13,10 @@ export const API = {
         GETALL: "/api/bloodGroup",
         GETBYID: (id: string) => `/api/bloodGroup/${id}`,
     },
+    REQUEST: {
+        CREATE: "/api/request",
+        GET_ALL: "/api/request",
+    },
     ADMIN: {
         USER: {
             GET_ALL: "/api/admin/users",
