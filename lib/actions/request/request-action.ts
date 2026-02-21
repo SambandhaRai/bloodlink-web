@@ -1,6 +1,6 @@
 "use server";
 
-import { acceptRequest, createRequest, getAllPendingRequests, getRequestById } from "@/lib/api/request/request";
+import { acceptRequest, createRequest, finishRequest, getAllPendingRequests, getRequestById, getUserRequestHistory } from "@/lib/api/request/request";
 import { revalidatePath } from "next/cache";
 
 export const handleCreateRequest = async (requestData: any) => {
@@ -106,7 +106,51 @@ export const handleAcceptRequest = async (id: string) => {
     } catch (err: Error | any) {
         return {
             success: false,
-            message: err.message || "Accpet request failed",
+            message: err.message || "Accept request failed",
+        };
+    }
+}
+
+export const handleFinishRequest = async (id: string) => {
+    try {
+        const result = await finishRequest(id);
+        if (result.success) {
+            return {
+                success: true,
+                data: result.data,
+                message: "Finished Request Successfully"
+            }
+        }
+        return {
+            success: false,
+            message: "Failed to Finish Request"
+        }
+    } catch (err: Error | any) {
+        return {
+            success: false,
+            message: err.message || "Finish request failed",
+        };
+    }
+}
+
+export const handleGetUserRequestHistory = async () => {
+    try {
+        const result = await getUserRequestHistory();
+        if (result.success) {
+            return {
+                success: true,
+                data: result.data,
+                message: "Fetched user request history successfully"
+            }
+        }
+        return {
+            success: false,
+            message: "Failed to fetch user request history"
+        }
+    } catch (err: Error | any) {
+        return {
+            success: false,
+            message: err.message || "Failed to fetch user request history",
         };
     }
 }

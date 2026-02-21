@@ -76,3 +76,33 @@ export const acceptRequest = async (id: string) => {
         )
     }
 }
+
+export const finishRequest = async (id: string) => {
+    try {
+        const response = await axios.patch(
+            API.REQUEST.FINISH(id)
+        );
+        return response.data;
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message
+            || err.message
+            || "Finish request failed"
+        )
+    }
+}
+
+export const getUserRequestHistory = async () => {
+    try {
+        const response = await axios.get(
+            API.REQUEST.GET_USER_HISTORY
+        );
+        return response.data;
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message
+            || err.message
+            || "Failed to fetch user request history"
+        )
+    }
+}
