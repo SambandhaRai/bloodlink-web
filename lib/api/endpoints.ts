@@ -15,7 +15,9 @@ export const API = {
     },
     REQUEST: {
         CREATE: "/api/request",
-        GET_ALL: "/api/request",
+        GET_ALL_PENDING: "/api/request",
+        GET_BY_ID: (id: string) => `/api/request/${id}`,
+        ACCEPT: (id: string) => `/api/request/${id}/accept`
     },
     ADMIN: {
         USER: {

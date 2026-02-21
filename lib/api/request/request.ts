@@ -17,7 +17,7 @@ export const createRequest = async (requestData: any) => {
     }
 };
 
-export const getAllRequests = async ({
+export const getAllPendingRequests = async ({
     page,
     size,
     search,
@@ -28,7 +28,7 @@ export const getAllRequests = async ({
 }) => {
     try {
         const response = await axios.get(
-            API.REQUEST.GET_ALL,
+            API.REQUEST.GET_ALL_PENDING,
             {
                 params: {
                     page,
@@ -42,7 +42,37 @@ export const getAllRequests = async ({
         throw new Error(
             err.response?.data?.message
             || err.message
-            || "Fetch requests failed"
+            || "Fetch pending requests failed"
         );
     }
 };
+
+export const getRequestById = async (id: string) => {
+    try {
+        const response = await axios.get(
+            API.REQUEST.GET_BY_ID(id)
+        );
+        return response.data;
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message
+            || err.message
+            || "Fetch request failed"
+        )
+    }
+}
+
+export const acceptRequest = async (id: string) => {
+    try {
+        const response = await axios.patch(
+            API.REQUEST.ACCEPT(id)
+        );
+        return response.data;
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message
+            || err.message
+            || "Accept request failed"
+        )
+    }
+}
