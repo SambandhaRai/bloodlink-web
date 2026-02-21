@@ -64,7 +64,7 @@ export default function RequestCard({ request }: { request: any }) {
 
             if (res.success) {
                 setShowConfirm(false);
-                toast.success(`${name}'s Request Accepted`);
+                toast.success(`${request.postedBy?.fullName}'s Request Accepted`);
 
                 setTimeout(() => {
                     router.push("/user/requests");

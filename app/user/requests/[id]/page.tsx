@@ -11,13 +11,21 @@ export default async function RequestDetailsPage({
 
     if (!result.success) {
         return (
-            <div className="mx-auto max-w-3xl px-6 py-12">
-                <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
-                    {result.message || "Failed to fetch request"}
+            <div className="min-h-screen bg-gray-100">
+                <div className="mx-auto max-w-3xl px-6 py-12">
+                    <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm text-red-700">
+                        {result.message || "Failed to fetch request"}
+                    </div>
                 </div>
             </div>
         );
     }
 
-    return <RequestDetailsCard request={result.data} />;
+    return (
+        <div className="min-h-screen bg-gray-100">
+            <section className="mx-auto max-w-3xl px-6 py-12">
+                <RequestDetailsCard request={result.data} />
+            </section>
+        </div>
+    );
 }
