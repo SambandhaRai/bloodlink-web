@@ -106,3 +106,32 @@ export const getUserRequestHistory = async () => {
         )
     }
 }
+
+export const getMatchedRequests = async ({
+    lng,
+    lat,
+    km,
+    page,
+    size,
+    search,
+}: {
+    lng: number;
+    lat: number;
+    km?: number;
+    page?: number;
+    size?: number;
+    search?: string;
+}) => {
+    try {
+        const url = API.REQUEST.GET_MATCHED({ lng, lat, km, page, size, search });
+
+        const response = await axios.get(url);
+        return response.data;
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message ||
+            err.message ||
+            "Failed to fetch matched requests"
+        );
+    }
+};
