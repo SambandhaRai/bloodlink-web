@@ -109,7 +109,7 @@ export default function LoginForm() {
           Remember Me
         </label>
 
-        <Link href="/forgot-password" className="text-sm font-semibold text-red-800 underline">
+        <Link href="/forgot-password" className="text-sm font-semibold text-red-800 hover:underline">
           Forgot password?
         </Link>
       </div>
@@ -117,7 +117,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isSubmitting || pending}
-        className="w-full rounded-lg bg-red-800 py-3 text-lg font-semibold text-white"
+        className="w-full rounded-lg bg-red-800 hover:bg-red-700 py-3 text-lg font-semibold text-white"
       >
         {isSubmitting || pending ? "Logging in..." : "Login"}
       </button>

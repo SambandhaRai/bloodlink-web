@@ -63,7 +63,6 @@ export default function RegisterForm() {
     }
   };
 
-  // ✅ same input style as UpdateUserForm
   const fieldWrap =
     "mt-2 flex items-center gap-2 rounded-xl border border-gray-200 bg-white px-3 py-2.5 " +
     "focus-within:border-red-600 focus-within:ring-2 focus-within:ring-red-100";
@@ -246,7 +245,7 @@ export default function RegisterForm() {
       <button
         type="submit"
         disabled={isSubmitting || pending}
-        className="w-full rounded-lg bg-red-800 py-3 text-lg font-semibold text-white"
+        className="w-full rounded-lg bg-red-800 hover:bg-red-700 py-3 text-lg font-semibold text-white"
       >
         {isSubmitting || pending ? "Signing Up..." : "Sign Up"}
       </button>

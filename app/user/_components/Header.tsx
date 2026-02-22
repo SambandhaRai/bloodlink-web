@@ -9,6 +9,7 @@ import { useAuth } from "@/context/AuthContext";
 const NAV_LINKS = [
     { href: "/user/home", label: "Home" },
     { href: "/user/requests", label: "Requests" },
+    { href: "/user/history", label: "History" },
     { href: "/user/profile", label: "Profile" },
 ];
 
@@ -24,51 +25,51 @@ export default function Header() {
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8" aria-label="Global">
                 <div className="flex h-16 items-center justify-between md:grid md:grid-cols-[1fr_auto_1fr] w-full">
 
-                {/* Left: Logo */}
-                <div className="flex items-center gap-2">
-                    <Link href="/" className="flex items-center gap-2 group">
-                    <Image
-                        src="/images/blood_link_logo_red.png"
-                        alt="Website Logo"
-                        width={70}
-                        height={70}
-                    />
-                    </Link>
-                </div>
+                    {/* Left: Logo */}
+                    <div className="flex items-center gap-2">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <Image
+                                src="/images/blood_link_logo_red.png"
+                                alt="Website Logo"
+                                width={70}
+                                height={70}
+                            />
+                        </Link>
+                    </div>
 
-                {/* Center: Desktop Nav */}
-                <div className="hidden md:flex items-center gap-6 justify-self-center">
-                    {NAV_LINKS.map((link) => (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        className={
-                        "text-sm font-semibold transition-colors " +
-                        (isActive(link.href)
-                            ? "text-red-800"
-                            : "text-black hover:text-red-800/70")
-                        }
-                    >
-                        {link.label}
-                    </Link>
-                    ))}
-                </div>
+                    {/* Center: Desktop Nav */}
+                    <div className="hidden md:flex items-center gap-6 justify-self-center">
+                        {NAV_LINKS.map((link) => (
+                            <Link
+                                key={link.href}
+                                href={link.href}
+                                className={
+                                    "text-sm font-semibold transition-colors " +
+                                    (isActive(link.href)
+                                        ? "text-red-800"
+                                        : "text-black hover:text-red-800/70")
+                                }
+                            >
+                                {link.label}
+                            </Link>
+                        ))}
+                    </div>
 
-                {/* Right: Auth */}
-                <div className="flex items-center gap-3 justify-self-end">
-                    <Link href={"/user/profile"}>
-                        <span className="text-xs text-black font-semibold">
-                            {user?.email || "Admin"}
-                        </span>
-                    </Link>
+                    {/* Right: Auth */}
+                    <div className="flex items-center gap-3 justify-self-end">
+                        <Link href={"/user/profile"}>
+                            <span className="text-xs text-black font-semibold">
+                                {user?.email || "Admin"}
+                            </span>
+                        </Link>
 
-                    <button
-                        onClick={logout}
-                        className="border px-3 py-2 text-sm font-semibold text-white bg-red-800 rounded-md hover:bg-red-700 transition-colors"
-                    >
-                    Logout
-                    </button>
-                </div>
+                        <button
+                            onClick={logout}
+                            className="border px-3 py-2 text-sm font-semibold text-white bg-red-800 rounded-md hover:bg-red-700 transition-colors"
+                        >
+                            Logout
+                        </button>
+                    </div>
 
                 </div>
             </nav>

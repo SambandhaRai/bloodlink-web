@@ -13,6 +13,14 @@ export const API = {
         GETALL: "/api/bloodGroup",
         GETBYID: (id: string) => `/api/bloodGroup/${id}`,
     },
+    REQUEST: {
+        CREATE: "/api/request",
+        GET_ALL_PENDING: "/api/request",
+        GET_BY_ID: (id: string) => `/api/request/${id}`,
+        ACCEPT: (id: string) => `/api/request/${id}/accept`,
+        FINISH: (id: string) => `/api/request/${id}/finish`,
+        GET_USER_HISTORY: "/api/request/user/history"
+    },
     ADMIN: {
         USER: {
             GET_ALL: "/api/admin/users",

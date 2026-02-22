@@ -16,7 +16,7 @@ export default function Page() {
       <h1 className="text-3xl font-semibold text-black">Login</h1>
       <p className="text-sm font-extralight mt-2 text-gray-400">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-semibold text-red-800 underline">
+        <Link href="/register" className="font-semibold text-red-800 hover:underline">
           Sign Up
         </Link>
       </p>

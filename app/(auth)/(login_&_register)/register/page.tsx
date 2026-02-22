@@ -22,7 +22,7 @@ export default function Page() {
       <h1 className="text-3xl font-semibold text-black">Sign Up</h1>
       <p className="text-sm font-extralight mt-2 text-gray-400">
         Already have an account?{" "}
-        <Link href="/login" className="font-semibold text-red-800 underline">
+        <Link href="/login" className="font-semibold text-red-800 hover:underline">
           Login
         </Link>
       </p>
