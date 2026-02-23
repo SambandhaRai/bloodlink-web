@@ -109,7 +109,6 @@ export default function RequestsTabsForm({
                 )}
             </div>
 
-            {/* Pagination can be wired here later */}
         </>
     );
 }
