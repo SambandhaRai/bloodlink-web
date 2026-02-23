@@ -36,7 +36,7 @@ export default async function RequestsPage({
     const page = sp.page || "1";
     const search = sp.search || "";
     const tab: "matched" | "all" = sp.tab === "matched" ? "matched" : "all";
-    const km = sp.km || "10";
+    const km = sp.km || "5";
 
     const cookieLoc = await readLocationCookie();
 

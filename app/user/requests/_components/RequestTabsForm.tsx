@@ -25,7 +25,7 @@ export default function RequestsTabsForm({
     const [pending, startTransition] = useTransition();
 
     const [tab, setTab] = useState<TabKey>(initialTab);
-    const [km] = useState(initialKm || "10");
+    const [km] = useState(initialKm || "5");
 
     const search = sp.get("search") ?? defaultSearch;
     const page = sp.get("page") ?? "1";
