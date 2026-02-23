@@ -2,25 +2,32 @@
 
 import { getAllHospitals, getHospitalById } from "@/lib/api/hospital/hospital";
 
-export const handleGetAllHospitals = async () => {
+export async function handleGetAllHospitals(params: {
+    page?: number;
+    size?: number;
+    search?: string;
+}) {
     try {
-        const result = await getAllHospitals();
-        if (result.success) {
+        const currentPage = params.page || 1;
+        const pageSize = params.size || 10;
+        const searchQuery = params.search || '';
+        const response = await getAllHospitals({
+            page: currentPage,
+            size: pageSize,
+            search: searchQuery,
+        });
+        if (response.success) {
             return {
                 success: true,
-                data: result.data,
-                message: "Fetched hospitals successfully"
+                data: response.data,
+                pagination: response.pagination
             }
         }
-        return {
-            success: true,
-            message: "Failed to fetch hospitals"
-        }
+        return { success: false, data: [], pagination: null };
     } catch (err: Error | any) {
-        return {
-            success: false,
-            message: err.response?.data?.message || err.message || "Failed to fetch hospitals"
-        };
+        throw new Error(
+            err.message || "Failed to fetch hospitals"
+        );
     }
 }
 
