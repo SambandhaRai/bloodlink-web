@@ -54,6 +54,10 @@ export const API = {
             GET_BY_ID: (id: string) => `/api/admin/users/${id}`,
             UPDATE: (id: string) => `/api/admin/users/${id}`,
             DELETE: (id: string) => `/api/admin/users/${id}`,
+        },
+        HOSPITAL: {
+            ADD: "/api/admin/hospital",
+            UPDATE: (id: string) => `/api/admin/hospital/${id}`,
         }
     }
 }
