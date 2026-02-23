@@ -5,19 +5,19 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function UsersTable(
-    { users, pagination, search } :
+  { users, pagination, search }:
     { users: any[]; pagination: any; search: string }
 ) {
-    const router = useRouter();
-    const [searchTerm, setSearchTerm] = useState(search);
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        router.push(`/admin/users?search=${searchTerm}`);
-        router.refresh();
-    }
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState(search);
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    router.push(`/admin/users?search=${searchTerm}`);
+    router.refresh();
+  }
 
-    return (
-        <div className="space-y-5">
+  return (
+    <div className="space-y-5">
       {/* Header row */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <div>
@@ -67,9 +67,8 @@ export default function UsersTable(
                 users.map((user, idx) => (
                   <tr
                     key={user._id}
-                    className={`${
-                      idx % 2 === 0 ? "bg-white" : "bg-gray-50/40"
-                    } hover:bg-red-50/40 transition`}
+                    className={`${idx % 2 === 0 ? "bg-white" : "bg-gray-50/40"
+                      } hover:bg-red-50/40 transition`}
                   >
                     <td className="px-4 py-3">
                       <span className="font-mono text-xs text-gray-600">
@@ -100,13 +99,12 @@ export default function UsersTable(
                           View
                         </Link>
 
-                        <Link
-                          href={`/admin/users/${user._id}/edit`}
+                        <button
                           className="rounded-md bg-red-800 px-3 py-1.5 text-xs font-semibold text-white
                                      hover:bg-red-900 transition"
                         >
-                          Edit
-                        </Link>
+                          Delete
+                        </button>
                       </div>
                     </td>
                   </tr>
@@ -171,5 +169,5 @@ export default function UsersTable(
         )}
       </div>
     </div>
-    )
+  )
 }

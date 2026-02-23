@@ -7,6 +7,7 @@ import { usePathname } from "next/navigation";
 const ADMIN_LINKS = [
     { href: "/admin", label: "Dashboard" },
     { href: "/admin/users", label: "Users" },
+    { href: "/admin/hospital", label: "Hospitals" },
 ];
 
 export default function Sidebar() {
@@ -28,14 +29,14 @@ export default function Sidebar() {
                 <div className="p-4 border-b border-white/20">
                     <Link href="/admin" className="flex items-center gap-3">
                         <div className="relative h-10 w-10 overflow-hidden rounded-md bg-white/10">
-                        <Image
-                            src="/images/blood_link_logo_white.png"
-                            alt="Website Logo"
-                            fill
-                            sizes="40px"
-                            className="object-contain p-1"
-                            priority
-                        />
+                            <Image
+                                src="/images/blood_link_logo_white.png"
+                                alt="Website Logo"
+                                fill
+                                sizes="40px"
+                                className="object-contain p-1"
+                                priority
+                            />
                         </div>
 
                         <span className="font-semibold text-white tracking-tight">Admin Panel</span>
