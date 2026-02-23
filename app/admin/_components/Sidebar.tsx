@@ -13,54 +13,57 @@ const ADMIN_LINKS = [
 export default function Sidebar() {
     const pathname = usePathname();
 
-    const isActive = (href: string) => href === "/admin" ? pathname === href : pathname?.startsWith(href);
+    const isActive = (href: string) =>
+        href === "/admin" ? pathname === href : pathname?.startsWith(href);
 
     return (
-        <>
-            {/* Sidebar */}
-            <aside className={`
-                fixed md:static 
-                top-0 left-0 
-                h-screen w-64 
-                bg-red-800 dark:bg-red-800
-                border-r border-white dark:border-black/20
-                z-40 overflow-y-auto`}
-            >
-                <div className="p-4 border-b border-white/20">
-                    <Link href="/admin" className="flex items-center gap-3">
-                        <div className="relative h-10 w-10 overflow-hidden rounded-md bg-white/10">
-                            <Image
-                                src="/images/blood_link_logo_white.png"
-                                alt="Website Logo"
-                                fill
-                                sizes="40px"
-                                className="object-contain p-1"
-                                priority
-                            />
-                        </div>
+        <aside
+            className="
+                fixed md:static
+                inset-y-0 left-0
+                w-64
+                h-dvh
+                bg-red-800
+                border-r border-white
+                z-40
+                overflow-y-auto
+            "
+        >
+            {/* Logo */}
+            <div className="p-4 border-b border-white/20">
+                <Link href="/admin" className="flex items-center gap-3">
+                    <div className="relative h-10 w-10 overflow-hidden rounded-md bg-white/10">
+                        <Image
+                            src="/images/blood_link_logo_white.png"
+                            alt="Website Logo"
+                            fill
+                            sizes="40px"
+                            className="object-contain p-1"
+                            priority
+                        />
+                    </div>
 
-                        <span className="font-semibold text-white tracking-tight">Admin Panel</span>
+                    <span className="font-semibold text-white tracking-tight">
+                        Admin Panel
+                    </span>
+                </Link>
+            </div>
+
+            {/* Nav */}
+            <nav className="p-2 space-y-1">
+                {ADMIN_LINKS.map(link => (
+                    <Link
+                        key={link.href}
+                        href={link.href}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${isActive(link.href)
+                            ? "bg-white text-black"
+                            : "text-white hover:bg-white/20"
+                            }`}
+                    >
+                        {link.label}
                     </Link>
-                </div>
-
-
-                <nav className="p-2 space-y-1">
-                    {
-                        ADMIN_LINKS.map(link => (
-                            <Link
-                                key={link.href}
-                                href={link.href}
-                                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-semibold transition-colors ${isActive(link.href)
-                                    ? 'bg-black dark:bg-white text-white dark:text-gray-900'
-                                    : 'text-white dark:text-white hover:bg-gray-100 dark:hover:bg-white/20'
-                                    }`}
-                            >
-                                <span>{link.label}</span>
-                            </Link >
-                        ))
-                    }
-                </nav >
-            </aside >
-        </>
+                ))}
+            </nav>
+        </aside>
     );
 }

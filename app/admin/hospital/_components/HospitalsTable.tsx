@@ -1,8 +1,12 @@
 "use client";
 
+import { handleDeleteHospital } from "@/lib/actions/admin/hospital-action";
 import Link from "next/link";
+import clsx from "clsx";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { toast } from "react-toastify";
+import { Plus, X } from "lucide-react";
 
 export default function HospitalsTable(
     { hospitals, pagination, search }:
@@ -16,35 +20,86 @@ export default function HospitalsTable(
         router.refresh();
     }
 
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedHospitalId, setSelectedHospitalId] = useState<string | null>(null);
+
+    const [isPending, startTransition] = useTransition();
+
+    const openConfirm = (hospitalId: string) => {
+        setSelectedHospitalId(hospitalId);
+        setShowConfirm(true);
+    };
+
+    const cancel = () => {
+        setShowConfirm(false);
+        setSelectedHospitalId(null);
+    };
+
+    const onConfirmDelete = () => {
+        if (!selectedHospitalId) return;
+
+        startTransition(async () => {
+            try {
+                const res = await handleDeleteHospital(selectedHospitalId);
+
+                if (res.success) {
+                    toast.success(res.message || "Deleted hospital successfully");
+                    setShowConfirm(false);
+                    setSelectedHospitalId(null);
+
+                    // refresh the table data
+                    router.refresh();
+                } else {
+                    toast.error(res.message || "Failed to delete hospital");
+                }
+            } catch (err: any) {
+                toast.error(err?.message || "Failed to delete hospital");
+            }
+        });
+    };
+
     return (
         <div className="space-y-5">
             {/* Header row */}
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-                <div>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                <div className="shrink-0">
                     <h1 className="text-xl font-semibold text-black">Hospitals</h1>
                     <p className="text-sm text-gray-500">
                         Search hospitals and manage their information.
                     </p>
                 </div>
 
-                {/* Search */}
-                <form onSubmit={handleSearch} className="flex w-full max-w-xl gap-2">
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="Search by name, email, phone..."
-                        className="w-full rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm text-black outline-none
-                       focus:border-red-800 focus:ring-2 focus:ring-red-100"
-                    />
-                    <button
-                        type="submit"
-                        className="rounded-lg bg-red-800 px-4 py-2.5 text-sm font-semibold text-white
-                       hover:bg-red-900 transition"
+                {/* Right side */}
+                <div className="flex w-full flex-col gap-1 sm:flex-row sm:items-center sm:justify-end">
+                    {/* Search */}
+                    <form onSubmit={handleSearch} className="flex w-full flex-1 gap-2">
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            placeholder="Search by hospital name..."
+                            className="w-full flex-1 rounded-lg border border-black/10 bg-white px-4 py-2.5 text-sm text-black outline-none
+                   focus:border-red-800 focus:ring-2 focus:ring-red-100"
+                        />
+                        <button
+                            type="submit"
+                            className="shrink-0 rounded-lg bg-red-800 px-4 py-2.5 text-sm font-semibold text-white
+                   hover:bg-red-900 transition"
+                        >
+                            Search
+                        </button>
+                    </form>
+
+                    {/* Add Hospital */}
+                    <Link
+                        href="/admin/hospital/add-hospital"
+                        className="inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-lg bg-white outline px-5 py-2.5
+                            text-sm font-semibold text-black shadow-sm hover:underline hover:bg-gray-100 transition"
                     >
-                        Search
-                    </button>
-                </form>
+                        <Plus className="h-4 w-4" />
+                        Add Hospital
+                    </Link>
+                </div>
             </div>
 
             {/* Table Card */}
@@ -88,6 +143,7 @@ export default function HospitalsTable(
                                                 </Link>
 
                                                 <button
+                                                    onClick={() => openConfirm(hospital._id)}
                                                     className="rounded-md bg-red-800 px-3 py-1.5 text-xs font-semibold text-white
                                      hover:bg-red-900 transition"
                                                 >
@@ -107,6 +163,51 @@ export default function HospitalsTable(
                         </tbody>
                     </table>
                 </div>
+
+                {/* Confirmation Modal */}
+                {showConfirm && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+                        <div className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl">
+                            <button
+                                onClick={cancel}
+                                aria-label="Close"
+                                className="absolute right-4 top-4 rounded-md p-1 text-gray-500 hover:bg-gray-100 hover:text-black"
+                            >
+                                <X className="h-5 w-5" />
+                            </button>
+
+                            <h3 className="text-lg font-semibold text-black">
+                                Confirm Delete
+                            </h3>
+
+                            <p className="mt-2 text-sm text-gray-600">
+                                Are you sure you want to delete this hospital?
+                            </p>
+
+                            <div className="mt-6 flex gap-3">
+                                <button
+                                    disabled={isPending}
+                                    onClick={onConfirmDelete}
+                                    className={clsx(
+                                        "flex-1 rounded-xl py-2 text-sm font-semibold text-white",
+                                        isPending
+                                            ? "cursor-not-allowed bg-red-400"
+                                            : "bg-red-800 hover:bg-red-700"
+                                    )}
+                                >
+                                    {isPending ? "Deleting..." : "Delete"}
+                                </button>
+
+                                <button
+                                    onClick={cancel}
+                                    className="flex-1 rounded-xl border py-2 text-sm font-semibold text-black hover:bg-gray-100 hover:underline"
+                                >
+                                    Cancel
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Pagination */}
                 {pagination && (

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import AddHospitalForm from "../_components/AddHospitalForm";
 
-export default function AddHospitalPage() {
+export default function Page() {
     return (
-        <section className="min-h-screen bg-white">
+        <section className="bg-white">
             <div className="mx-auto max-w-7xl px-6 py-8">
                 <div className="mb-6 flex items-center justify-between">
                     <div>
@@ -15,13 +15,12 @@ export default function AddHospitalPage() {
 
                     <Link
                         href="/admin/hospital"
-                        className="rounded-xl border bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
+                        className="rounded-xl border border-black/10 bg-white px-4 py-2 text-sm font-semibold text-gray-800 hover:bg-gray-50"
                     >
                         Back
                     </Link>
                 </div>
 
-                {/* Form keeps its own design */}
                 <AddHospitalForm />
             </div>
         </section>
