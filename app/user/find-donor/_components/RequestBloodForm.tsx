@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useTransition } from "react";
+import { useEffect, useMemo, useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "react-toastify";
@@ -41,6 +41,98 @@ const inputCls =
 
 const selectCls =
     "w-full appearance-none bg-transparent text-sm text-gray-700 outline-none";
+
+// Hospital Autocomplete
+type HospitalAutocompleteProps = {
+    hospitals: HospitalUI[];
+    valueId: string;
+    onChangeId: (id: string) => void;
+    error?: string;
+    disabled?: boolean;
+};
+
+function HospitalAutocomplete({
+    hospitals,
+    valueId,
+    onChangeId,
+    error,
+    disabled,
+}: HospitalAutocompleteProps) {
+    const [query, setQuery] = useState("");
+    const [open, setOpen] = useState(false);
+
+    const selected = useMemo(
+        () => hospitals.find((h) => h._id === valueId) ?? null,
+        [hospitals, valueId]
+    );
+
+    useEffect(() => {
+        setQuery(selected?.name ?? "");
+    }, [selected?._id]);
+
+    const filtered = useMemo(() => {
+        const q = query.trim().toLowerCase();
+        if (!q) return hospitals.slice(0, 10);
+
+        return hospitals
+            .filter((h) => h.name.toLowerCase().includes(q))
+            .slice(0, 10);
+    }, [hospitals, query]);
+
+    return (
+        <div className="relative">
+            <div className={`${fieldWrap} relative pr-10`}>
+                <input
+                    value={query}
+                    onChange={(e) => {
+                        const v = e.target.value;
+                        setQuery(v);
+                        setOpen(true);
+
+                        if (valueId) onChangeId("");
+                    }}
+                    onFocus={() => setOpen(true)}
+                    onBlur={() => {
+                        setTimeout(() => setOpen(false), 120);
+                    }}
+                    placeholder="Search hospital..."
+                    className={inputCls}
+                    disabled={disabled}
+                />
+
+                <ChevronDown
+                    size={18}
+                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
+                />
+            </div>
+
+            {open && !disabled && filtered.length > 0 && (
+                <div className="absolute z-50 mt-2 w-full overflow-hidden rounded-xl text-black border border-gray-200 bg-white shadow-lg">
+                    <ul className="max-h-56 overflow-auto py-1">
+                        {filtered.map((h) => (
+                            <li key={h._id}>
+                                <button
+                                    type="button"
+                                    className="w-full px-3 py-2 text-left text-sm hover:bg-gray-100"
+                                    onMouseDown={(e) => e.preventDefault()}
+                                    onClick={() => {
+                                        onChangeId(h._id);
+                                        setQuery(h.name);
+                                        setOpen(false);
+                                    }}
+                                >
+                                    {h.name}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
+
+            {error && <p className="mt-1 text-red-500">{error}</p>}
+        </div>
+    );
+}
 
 export default function RequestBloodForm({
     bloodGroups,
@@ -90,7 +182,10 @@ export default function RequestBloodForm({
     const isOthers = requestFor === "others";
 
     useEffect(() => {
-        setValue("requestFor", "self", { shouldValidate: false, shouldDirty: false });
+        setValue("requestFor", "self", {
+            shouldValidate: false,
+            shouldDirty: false,
+        });
         clearErrors();
     }, [setValue, clearErrors]);
 
@@ -144,7 +239,8 @@ export default function RequestBloodForm({
                                             onClick={() => onTabChange("self")}
                                             className="h-10 rounded-xl text-sm font-semibold transition disabled:opacity-60"
                                             style={{
-                                                background: requestFor === "self" ? BRAND : "transparent",
+                                                background:
+                                                    requestFor === "self" ? BRAND : "transparent",
                                                 color: requestFor === "self" ? "white" : "#374151",
                                             }}
                                         >
@@ -156,7 +252,8 @@ export default function RequestBloodForm({
                                             onClick={() => onTabChange("others")}
                                             className="h-10 rounded-xl text-sm font-semibold transition disabled:opacity-60"
                                             style={{
-                                                background: requestFor === "others" ? BRAND : "transparent",
+                                                background:
+                                                    requestFor === "others" ? BRAND : "transparent",
                                                 color: requestFor === "others" ? "white" : "#374151",
                                             }}
                                         >
@@ -174,17 +271,25 @@ export default function RequestBloodForm({
                                     {bloodError ? (
                                         <p className="text-sm text-red-600">{bloodError}</p>
                                     ) : bloodGroups.length === 0 ? (
-                                        <p className="text-sm text-gray-500">No blood groups available</p>
+                                        <p className="text-sm text-gray-500">
+                                            No blood groups available
+                                        </p>
                                     ) : (
                                         <>
                                             <BloodTypeSelector
                                                 groups={bloodGroups}
                                                 selectedId={watch("recipientBloodId") || null}
-                                                onSelect={(id) => setValue("recipientBloodId", id, { shouldValidate: true })}
+                                                onSelect={(id) =>
+                                                    setValue("recipientBloodId", id, {
+                                                        shouldValidate: true,
+                                                    })
+                                                }
                                                 disabled={pending || isSubmitting}
                                             />
                                             {errors.recipientBloodId && (
-                                                <p className="mt-1 text-red-500">{errors.recipientBloodId.message}</p>
+                                                <p className="mt-1 text-red-500">
+                                                    {errors.recipientBloodId.message}
+                                                </p>
                                             )}
                                         </>
                                     )}
@@ -205,7 +310,9 @@ export default function RequestBloodForm({
                                         />
                                     </div>
                                     {errors.recipientDetails && (
-                                        <p className="mt-1 text-red-500">{errors.recipientDetails.message}</p>
+                                        <p className="mt-1 text-red-500">
+                                            {errors.recipientDetails.message}
+                                        </p>
                                     )}
                                 </div>
 
@@ -220,7 +327,9 @@ export default function RequestBloodForm({
                                             className={`${selectCls} cursor-pointer`}
                                             disabled={pending || isSubmitting}
                                         >
-                                            <option value="critical">{conditionLabel("critical")}</option>
+                                            <option value="critical">
+                                                {conditionLabel("critical")}
+                                            </option>
                                             <option value="urgent">{conditionLabel("urgent")}</option>
                                             <option value="stable">{conditionLabel("stable")}</option>
                                         </select>
@@ -231,11 +340,13 @@ export default function RequestBloodForm({
                                         />
                                     </div>
                                     {errors.recipientCondition && (
-                                        <p className="mt-1 text-red-500">{errors.recipientCondition.message}</p>
+                                        <p className="mt-1 text-red-500">
+                                            {errors.recipientCondition.message}
+                                        </p>
                                     )}
                                 </div>
 
-                                {/* Hospital */}
+                                {/* Hospital (Autocomplete) */}
                                 <div className="space-y-1">
                                     <label className="text-[20px] text-black leading-[1.2] font-semibold">
                                         Hospital Name:
@@ -244,35 +355,19 @@ export default function RequestBloodForm({
                                     {hospitalError ? (
                                         <p className="text-sm text-red-600">{hospitalError}</p>
                                     ) : activeHospitals.length === 0 ? (
-                                        <p className="text-sm text-gray-500">No hospitals available</p>
+                                        <p className="text-sm text-gray-500">
+                                            No hospitals available
+                                        </p>
                                     ) : (
-                                        <>
-                                            <div className={`${fieldWrap} relative pr-10`}>
-                                                <select
-                                                    {...register("hospitalId")}
-                                                    defaultValue=""
-                                                    className={`${selectCls} cursor-pointer`}
-                                                    disabled={pending || isSubmitting}
-                                                >
-                                                    <option value="" disabled>
-                                                        Choose Hospital
-                                                    </option>
-                                                    {activeHospitals.map((h) => (
-                                                        <option key={h._id} value={h._id}>
-                                                            {h.name}
-                                                        </option>
-                                                    ))}
-                                                </select>
-
-                                                <ChevronDown
-                                                    size={18}
-                                                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-400"
-                                                />
-                                            </div>
-                                            {errors.hospitalId && (
-                                                <p className="mt-1 text-red-500">{errors.hospitalId.message}</p>
-                                            )}
-                                        </>
+                                        <HospitalAutocomplete
+                                            hospitals={activeHospitals}
+                                            valueId={watch("hospitalId") || ""}
+                                            onChangeId={(id) =>
+                                                setValue("hospitalId", id, { shouldValidate: true })
+                                            }
+                                            error={errors.hospitalId?.message}
+                                            disabled={pending || isSubmitting}
+                                        />
                                     )}
                                 </div>
 
@@ -293,7 +388,9 @@ export default function RequestBloodForm({
                                                 />
                                             </div>
                                             {errors.relationToPatient && (
-                                                <p className="mt-1 text-red-500">{errors.relationToPatient.message}</p>
+                                                <p className="mt-1 text-red-500">
+                                                    {errors.relationToPatient.message}
+                                                </p>
                                             )}
                                         </div>
 
@@ -307,7 +404,9 @@ export default function RequestBloodForm({
                                                 />
                                             </div>
                                             {errors.patientName && (
-                                                <p className="mt-1 text-red-500">{errors.patientName.message}</p>
+                                                <p className="mt-1 text-red-500">
+                                                    {errors.patientName.message}
+                                                </p>
                                             )}
                                         </div>
 
@@ -321,7 +420,9 @@ export default function RequestBloodForm({
                                                 />
                                             </div>
                                             {errors.patientPhone && (
-                                                <p className="mt-1 text-red-500">{errors.patientPhone.message}</p>
+                                                <p className="mt-1 text-red-500">
+                                                    {errors.patientPhone.message}
+                                                </p>
                                             )}
                                         </div>
                                     </div>
