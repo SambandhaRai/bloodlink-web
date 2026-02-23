@@ -1,6 +1,6 @@
 "use server";
 
-import { addHospital, updateHospital } from "@/lib/api/admin/hospital";
+import { addHospital, deleteHospital, updateHospital } from "@/lib/api/admin/hospital";
 import { revalidatePath } from "next/cache";
 
 export const handleAddHospital = async (formData: any) => {
@@ -52,6 +52,33 @@ export const handleUpdateHospital = async (id: string, formData: any) => {
         return {
             success: false as const,
             message: err.message || "Failed to update hospital",
+        };
+    }
+};
+
+export const handleDeleteHospital = async (id: string) => {
+    try {
+        const result = await deleteHospital(id);
+
+        if (result.success) {
+            revalidatePath("/admin/hospitals");
+            revalidatePath(`/admin/hospitals/${id}`);
+
+            return {
+                success: true as const,
+                data: result.data,
+                message: result.message || "Deleted hospital successfully",
+            };
+        }
+
+        return {
+            success: false as const,
+            message: result.message || "Failed to delete hospital",
+        };
+    } catch (err: Error | any) {
+        return {
+            success: false as const,
+            message: err.message || "Failed to delete hospital",
         };
     }
 };

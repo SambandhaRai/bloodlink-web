@@ -123,9 +123,9 @@ export const getMatchedRequests = async ({
     search?: string;
 }) => {
     try {
-        const url = API.REQUEST.GET_MATCHED({ lng, lat, km, page, size, search });
-
-        const response = await axios.get(url);
+        const response = await axios.get(
+            API.REQUEST.GET_MATCHED({ lng, lat, km, page, size, search })
+        );
         return response.data;
     } catch (err: Error | any) {
         throw new Error(

@@ -58,6 +58,7 @@ export const API = {
         HOSPITAL: {
             ADD: "/api/admin/hospital",
             UPDATE: (id: string) => `/api/admin/hospital/${id}`,
+            DELETE: (id: string) => `/api/admin/hospital/${id}`,
         }
     }
 }
