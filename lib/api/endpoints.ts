@@ -57,6 +57,7 @@ export const API = {
         },
         REQUEST: {
             GET_REQUEST_HISTORY: (id: string) => `/api/admin/users/${id}/request-history`,
+            GET_REQUEST_STATS: "/api/admin/requests/stats",
         },
         HOSPITAL: {
             ADD: "/api/admin/hospital",
