@@ -1,6 +1,6 @@
 "use server";
 
-import { acceptRequest, createRequest, finishRequest, getAllPendingRequests, getMatchedRequests, getRequestById, getUserRequestHistory } from "@/lib/api/request/request";
+import { acceptRequest, createRequest, finishRequest, getAllPendingRequests, getMatchedRequests, getRequestById, getMyRequestHistory } from "@/lib/api/request/request";
 import { revalidatePath } from "next/cache";
 
 export const handleCreateRequest = async (requestData: any) => {
@@ -132,9 +132,9 @@ export const handleFinishRequest = async (id: string) => {
     }
 }
 
-export const handleGetUserRequestHistory = async () => {
+export const handleGetMyRequestHistory = async () => {
     try {
-        const result = await getUserRequestHistory();
+        const result = await getMyRequestHistory();
         if (result.success) {
             return {
                 success: true,

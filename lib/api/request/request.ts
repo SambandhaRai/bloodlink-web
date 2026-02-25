@@ -92,10 +92,10 @@ export const finishRequest = async (id: string) => {
     }
 }
 
-export const getUserRequestHistory = async () => {
+export const getMyRequestHistory = async () => {
     try {
         const response = await axios.get(
-            API.REQUEST.GET_USER_HISTORY
+            API.REQUEST.GET_MY_HISTORY
         );
         return response.data;
     } catch (err: Error | any) {

@@ -23,7 +23,7 @@ export const API = {
         GET_BY_ID: (id: string) => `/api/request/${id}`,
         ACCEPT: (id: string) => `/api/request/${id}/accept`,
         FINISH: (id: string) => `/api/request/${id}/finish`,
-        GET_USER_HISTORY: "/api/request/user/history",
+        GET_MY_HISTORY: "/api/request/my/history",
 
         GET_MATCHED: (
             params: {
@@ -54,6 +54,9 @@ export const API = {
             GET_BY_ID: (id: string) => `/api/admin/users/${id}`,
             UPDATE: (id: string) => `/api/admin/users/${id}`,
             DELETE: (id: string) => `/api/admin/users/${id}`,
+        },
+        REQUEST: {
+            GET_REQUEST_HISTORY: (id: string) => `/api/admin/users/${id}/request-history`,
         },
         HOSPITAL: {
             ADD: "/api/admin/hospital",
