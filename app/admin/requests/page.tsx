@@ -20,7 +20,6 @@ export default async function RequestsPage({
         <div className="mt-5 space-y-4">
             <div>
                 <h1 className="text-xl font-semibold text-black">Requests</h1>
-                <p className="text-sm text-gray-500">Find and accept blood requests.</p>
             </div>
 
             <RequestsList
