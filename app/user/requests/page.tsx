@@ -2,6 +2,7 @@ import {
     handleGetAllPendingRequests,
     handleGetMatchedRequests,
 } from "@/lib/actions/request/request-action";
+import { handleGetProfile } from "@/lib/actions/user/user-action";
 import RequestsTabsForm from "./_components/RequestTabsForm";
 import { cookies } from "next/headers";
 
@@ -21,6 +22,18 @@ async function readLocationCookie(): Promise<LocationCookie | null> {
     }
 }
 
+function readProfileLocation(profile: any): { lat: number; lng: number } | null {
+    const coordinates = profile?.location?.coordinates;
+    if (!Array.isArray(coordinates) || coordinates.length !== 2) return null;
+
+    const lng = Number(coordinates[0]);
+    const lat = Number(coordinates[1]);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+    return { lat, lng };
+}
+
 export default async function RequestsPage({
     searchParams,
 }: {
@@ -38,19 +51,25 @@ export default async function RequestsPage({
     const tab: "matched" | "all" = sp.tab === "matched" ? "matched" : "all";
     const km = sp.km || "5";
 
-    const cookieLoc = await readLocationCookie();
+    const [profileRes, cookieLoc] = await Promise.all([
+        handleGetProfile(),
+        readLocationCookie(),
+    ]);
+
+    const profileLoc = profileRes.success ? readProfileLocation(profileRes.data) : null;
+    const effectiveLoc = profileLoc ?? cookieLoc;
 
     let result:
         | { success: true; data: any[]; pagination?: any }
         | { success: false; message?: string };
 
     if (tab === "matched") {
-        if (!cookieLoc) {
+        if (!effectiveLoc) {
             result = { success: true, data: [], pagination: undefined };
         } else {
             result = await handleGetMatchedRequests({
-                lng: cookieLoc.lng,
-                lat: cookieLoc.lat,
+                lng: effectiveLoc.lng,
+                lat: effectiveLoc.lat,
                 km,
                 page,
                 size: "6",

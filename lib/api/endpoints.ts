@@ -6,6 +6,7 @@ export const API = {
     USER: {
         GET_PROFILE: "/api/user/profile",
         UPDATE_PROFILE: "/api/user/update-profile",
+        UPDATE_LOCATION: "/api/user/location",
         REQUEST_PASSWORD_RESET: '/api/user/request-password-reset',
         RESET_PASSWORD: (token: string) => `/api/user/reset-password/${token}`,
     },

@@ -7,6 +7,7 @@ import UserHomeHeader from "./_components/UserHomeHeader";
 import UserHomeStats from "./_components/UserHomeStats";
 import HomeRequestsPreview from "./_components/HomeRequestsPreview";
 import HomeHistoryPreview from "./_components/HomeHistoryPreview";
+import HomeLocationPermission from "./_components/HomeLocationPermission";
 
 export default async function UserHomePage() {
     const [profileRes, pendingRes, historyRes] = await Promise.all([
@@ -37,6 +38,14 @@ export default async function UserHomePage() {
         total: donatedCount + receivedCount + requestedOngoingCount + donationOngoingCount,
     };
 
+    const coords = user?.location?.coordinates;
+    const initialLocation = Array.isArray(coords) && coords.length === 2
+        ? {
+            lng: Number(coords[0]),
+            lat: Number(coords[1]),
+        }
+        : null;
+
     return (
         <section className="mx-auto max-w-7xl px-6 py-10">
             <div className="space-y-6">
@@ -64,6 +73,8 @@ export default async function UserHomePage() {
                         </Link>
                     </div>
                 </div>
+
+                <HomeLocationPermission initialLocation={initialLocation} />
 
                 <UserHomeHeader user={user} />
                 <UserHomeStats counts={counts} />
