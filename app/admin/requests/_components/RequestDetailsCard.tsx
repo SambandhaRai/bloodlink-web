@@ -13,6 +13,12 @@ const conditionColorMap: Record<string, string> = {
     critical: "bg-red-500",
 };
 
+const conditionHintMap: Record<string, string> = {
+    stable: "Stable: not very urgent but timely help supports recovery.",
+    urgent: "Urgent: immediate blood support is needed.",
+    critical: "Critical: life-threatening case requiring blood immediately.",
+};
+
 function timeAgo(dateString?: string) {
     if (!dateString) return "";
 
@@ -54,6 +60,13 @@ export default function RequestDetailsCard({ request }: { request: any }) {
 
     const showSelfInfo = request?.requestFor === "self";
     const showOthersInfo = request?.requestFor === "others";
+    const donor = request?.donorId && typeof request.donorId === "object" ? request.donorId : null;
+
+    const donorProfileSrc = donor?.profilePicture
+        ? donor.profilePicture.startsWith("http")
+            ? donor.profilePicture
+            : `${apiBase}${donor.profilePicture.startsWith("/") ? "" : "/uploads/"}${donor.profilePicture}`
+        : null;
 
     const router = useRouter();
 
@@ -61,17 +74,22 @@ export default function RequestDetailsCard({ request }: { request: any }) {
         <div className="relative w-full">
             <div className="relative w-full rounded-2xl bg-white p-6 shadow-xl">
                 {/* ribbon */}
-                <span
-                    className={clsx(
-                        "absolute right-16 top-6 h-4 w-4 rounded-sm",
-                        conditionColorMap[condition] || "bg-gray-400"
-                    )}
-                />
+                <div className="group absolute right-15 top-7 z-30">
+                    <span
+                        className={clsx(
+                            "block h-4 w-4 rounded-sm",
+                            conditionColorMap[condition] || "bg-gray-400"
+                        )}
+                    />
+                    <div className="pointer-events-none absolute -top-2 right-0 z-20 hidden -translate-y-full whitespace-nowrap rounded-md border border-black/10 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-md group-hover:block">
+                        {conditionHintMap[condition] || `Condition: ${request?.recipientCondition || "Unknown"}`}
+                    </div>
+                </div>
 
                 {/* close */}
                 <button
                     onClick={() => router.back()}
-                    className="absolute right-5 top-5 rounded-md p-2 hover:bg-gray-100"
+                    className="absolute right-5 top-5 z-20 rounded-md p-2 hover:bg-gray-100"
                     aria-label="Close"
                 >
                     <X className="h-5 w-5 text-black" />
@@ -181,6 +199,48 @@ export default function RequestDetailsCard({ request }: { request: any }) {
                             </div>
                         </div>
                     )}
+
+                    {donor ? (
+                        <div className="rounded-xl border bg-gray-50 p-4 text-sm">
+                            <p className="font-semibold text-black">Donor Info:</p>
+
+                            <div className="mt-3 flex items-center gap-3">
+                                <div className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border bg-white">
+                                    {donorProfileSrc ? (
+                                        <Image
+                                            src={donorProfileSrc}
+                                            alt={donor?.fullName || "Donor"}
+                                            width={48}
+                                            height={48}
+                                            className="h-full w-full object-cover"
+                                        />
+                                    ) : (
+                                        <User2 className="h-6 w-6 text-gray-400" />
+                                    )}
+                                </div>
+
+                                <div className="min-w-0 flex-1">
+                                    <p className="truncate font-medium text-gray-900">
+                                        {donor?.fullName || "-"}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        {donor?.bloodId?.bloodGroup ? `Blood: ${donor.bloodId.bloodGroup}` : "Blood: -"}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                                <div>
+                                    <p className="text-xs text-gray-500">Phone</p>
+                                    <p className="font-medium text-gray-800">{donor?.phoneNumber || "-"}</p>
+                                </div>
+                                <div>
+                                    <p className="text-xs text-gray-500">Email</p>
+                                    <p className="font-medium text-gray-800">{donor?.email || "-"}</p>
+                                </div>
+                            </div>
+                        </div>
+                    ) : null}
                 </div>
             </div>
         </div>

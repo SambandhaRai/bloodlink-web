@@ -4,11 +4,12 @@ import { handleGetAllPendingRequests } from "@/lib/actions/request/request-actio
 export default async function RequestsPage({
     searchParams,
 }: {
-    searchParams: { page?: string; size?: string; search?: string };
+    searchParams: Promise<{ page?: string; size?: string; search?: string }>;
 }) {
-    const page = searchParams.page || "1";
-    const size = searchParams.size || "9";
-    const search = searchParams.search || "";
+    const params = await searchParams;
+    const page = params.page || "1";
+    const size = params.size || "9";
+    const search = params.search || "";
 
     const res = await handleGetAllPendingRequests({
         page,

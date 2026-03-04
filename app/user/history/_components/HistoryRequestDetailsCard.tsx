@@ -16,6 +16,12 @@ const conditionColorMap: Record<string, string> = {
     critical: "bg-red-500",
 };
 
+const conditionHintMap: Record<string, string> = {
+    stable: "Stable: not very urgent but timely help supports recovery.",
+    urgent: "Urgent: immediate blood support is needed.",
+    critical: "Critical: life-threatening case requiring blood immediately.",
+};
+
 function timeAgo(dateString?: string) {
     if (!dateString) return "";
 
@@ -115,17 +121,22 @@ export default function HistoryRequestDetailsCard({
                 )}
             >
                 {/* ribbon */}
-                <span
-                    className={clsx(
-                        "absolute right-16 top-6 h-4 w-4 rounded-sm",
-                        conditionColorMap[condition] || "bg-gray-400"
-                    )}
-                />
+                <div className="group absolute right-19 top-6 z-30">
+                    <span
+                        className={clsx(
+                            "block h-4 w-4 rounded-sm",
+                            conditionColorMap[condition] || "bg-gray-400"
+                        )}
+                    />
+                    <div className="pointer-events-none absolute -top-2 right-0 z-20 hidden -translate-y-full whitespace-nowrap rounded-md border border-black/10 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-md group-hover:block">
+                        {conditionHintMap[condition] || `Condition: ${request?.recipientCondition || "Unknown"}`}
+                    </div>
+                </div>
 
                 {/* close */}
                 <button
                     onClick={() => router.back()}
-                    className="absolute right-5 top-5 rounded-md p-2 hover:bg-gray-100"
+                    className="absolute right-5 top-5 z-20 rounded-md p-2 hover:bg-gray-100"
                     aria-label="Close"
                 >
                     <X className="h-5 w-5 text-black" />

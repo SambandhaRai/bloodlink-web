@@ -416,6 +416,8 @@ export default function RequestBloodForm({
                                                     {...register("patientPhone")}
                                                     placeholder="Patient phone number"
                                                     className={inputCls}
+                                                    maxLength={10}
+                                                    minLength={10}
                                                     disabled={pending || isSubmitting}
                                                 />
                                             </div>

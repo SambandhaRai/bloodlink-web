@@ -86,6 +86,10 @@ export default function RequestCard({ request }: { request: any }) {
                         For: {request.requestFor.toUpperCase()}
                     </p>
                 </div>
+
+                <span className="absolute top-10 right-5 text-xs text-gray-500">
+                    {request.requestStatus.toUpperCase()}
+                </span>
             </div>
 
 
