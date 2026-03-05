@@ -1,7 +1,7 @@
 "use server";
 
-import { getProfile, requestPasswordReset, resetPassword, updateUserProfile } from "@/lib/api/user/user";
-import { setUserData } from "@/lib/cookie";
+import { getProfile, requestPasswordReset, resetPassword, updateUserLocation, updateUserProfile } from "@/lib/api/user/user";
+import { setUserData, setUserLocation } from "@/lib/cookie";
 import { revalidatePath } from "next/cache";
 
 export const handleGetProfile = async () => {
@@ -45,6 +45,38 @@ export const handleUpdateUserProfile = async (formData: any) => {
             success: false,
             message: err.message || "Update profile failed"
         }
+    }
+}
+
+export const handleUpdateUserLocation = async ({ lat, lng }: { lat: number; lng: number }) => {
+    try {
+        const result = await updateUserLocation({ lat, lng });
+
+        if (result.success) {
+            await setUserLocation(lat, lng);
+            if (result.data) {
+                await setUserData(result.data);
+            }
+
+            revalidatePath("/user/home");
+            revalidatePath("/user/requests");
+
+            return {
+                success: true,
+                message: result.message || "Location updated successfully",
+                data: result.data,
+            };
+        }
+
+        return {
+            success: false,
+            message: result.message || "Location update failed",
+        };
+    } catch (err: Error | any) {
+        return {
+            success: false,
+            message: err.message || "Location update failed",
+        };
     }
 }
 

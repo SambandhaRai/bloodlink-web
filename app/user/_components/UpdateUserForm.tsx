@@ -231,11 +231,9 @@ export default function UpdateUserForm({
       // clear preview + file input
       dismissImage();
 
-      // bust image cache (same filename sometimes)
       setImgError(false);
       setImgVersion(Date.now());
 
-      // re-fetch server component data
       router.refresh();
     } catch (err: any) {
       toast.error(err?.message || "Profile update failed.");
@@ -281,7 +279,7 @@ export default function UpdateUserForm({
   hover:opacity-95 focus-visible:ring-2 focus-visible:ring-red-200"
                   aria-label="Change profile picture"
                 >
-                  {/* OUTER RING (no overflow hidden, so icon can sit outside) */}
+                  {/* OUTER RING */}
                   <div className="relative h-full w-full rounded-full border-4 border-white bg-transparent shadow-lg ring-1 ring-black/5">
                     {/* INNER IMAGE CLIP */}
                     <div className="relative h-full w-full overflow-hidden rounded-full bg-gray-100">

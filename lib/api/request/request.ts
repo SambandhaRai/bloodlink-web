@@ -92,10 +92,10 @@ export const finishRequest = async (id: string) => {
     }
 }
 
-export const getUserRequestHistory = async () => {
+export const getMyRequestHistory = async () => {
     try {
         const response = await axios.get(
-            API.REQUEST.GET_USER_HISTORY
+            API.REQUEST.GET_MY_HISTORY
         );
         return response.data;
     } catch (err: Error | any) {
@@ -106,3 +106,32 @@ export const getUserRequestHistory = async () => {
         )
     }
 }
+
+export const getMatchedRequests = async ({
+    lng,
+    lat,
+    km,
+    page,
+    size,
+    search,
+}: {
+    lng: number;
+    lat: number;
+    km?: number;
+    page?: number;
+    size?: number;
+    search?: string;
+}) => {
+    try {
+        const response = await axios.get(
+            API.REQUEST.GET_MATCHED({ lng, lat, km, page, size, search })
+        );
+        return response.data;
+    } catch (err: Error | any) {
+        throw new Error(
+            err.response?.data?.message ||
+            err.message ||
+            "Failed to fetch matched requests"
+        );
+    }
+};

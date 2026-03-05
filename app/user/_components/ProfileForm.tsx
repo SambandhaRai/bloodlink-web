@@ -19,7 +19,7 @@ export default function ProfileForm({
   onLogout,
 }: {
   user: any;
-  onLogout?: () => void; // optional if you want a logout handler
+  onLogout?: () => void;
 }) {
   const profileSrc = user?.profilePicture
     ? user.profilePicture.startsWith("http")

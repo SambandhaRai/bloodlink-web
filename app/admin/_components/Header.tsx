@@ -15,11 +15,11 @@ export default function Header() {
                     <div className="flex items-center gap-2">
                         <Link href="/admin" className="flex items-center gap-2 group">
                             <Image
-                            src = "/images/blood_link_logo_red.png"
-                            alt = "Website Logo"
-                            width = {70}
-                            height = {70}
-                            className=""
+                                src="/images/blood_link_logo_red.png"
+                                alt="Website Logo"
+                                width={70}
+                                height={70}
+                                className=""
                             />
                             <span className="text-base text-black font-semibold tracking-tight group-hover:opacity-80 transition-opacity">
                                 Admin Panel
@@ -36,7 +36,7 @@ export default function Header() {
                                 onClick={() => {
                                     logout();
                                 }}
-                                className="w-full border flex items-center gap-2 px-3 py-2 text-sm font-semibold text-white bg-red-800 rounded-md hover:bg-red-800/80 transition-colors text-left"
+                                className="w-full border flex items-center gap-2 px-3 py-2 text-sm font-semibold text-white bg-red-800 rounded-md hover:bg-red-800/80 hover:underline transition-colors text-left"
                             >
                                 Logout
                             </button>

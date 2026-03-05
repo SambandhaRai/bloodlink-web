@@ -1,8 +1,8 @@
-import { handleGetUserRequestHistory } from "@/lib/actions/request/request-action";
+import { handleGetMyRequestHistory } from "@/lib/actions/request/request-action";
 import HistoryClient from "./_components/HistoryClient";
 
 export default async function Page() {
-    const res = await handleGetUserRequestHistory();
+    const res = await handleGetMyRequestHistory();
 
     const history = res.success
         ? res.data

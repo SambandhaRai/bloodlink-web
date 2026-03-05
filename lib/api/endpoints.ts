@@ -6,6 +6,7 @@ export const API = {
     USER: {
         GET_PROFILE: "/api/user/profile",
         UPDATE_PROFILE: "/api/user/update-profile",
+        UPDATE_LOCATION: "/api/user/location",
         REQUEST_PASSWORD_RESET: '/api/user/request-password-reset',
         RESET_PASSWORD: (token: string) => `/api/user/reset-password/${token}`,
     },
@@ -13,13 +14,40 @@ export const API = {
         GETALL: "/api/bloodGroup",
         GETBYID: (id: string) => `/api/bloodGroup/${id}`,
     },
+    HOSPITAL: {
+        GET_ALL: "/api/hospital",
+        GET_BY_ID: (id: string) => `/api/hospital/${id}`
+    },
     REQUEST: {
         CREATE: "/api/request",
         GET_ALL_PENDING: "/api/request",
         GET_BY_ID: (id: string) => `/api/request/${id}`,
         ACCEPT: (id: string) => `/api/request/${id}/accept`,
         FINISH: (id: string) => `/api/request/${id}/finish`,
-        GET_USER_HISTORY: "/api/request/user/history"
+        GET_MY_HISTORY: "/api/request/my/history",
+
+        GET_MATCHED: (
+            params: {
+                lng: number;
+                lat: number;
+                km?: number;
+                page?: number;
+                size?: number;
+                search?: string;
+            }
+        ) => {
+            const q = new URLSearchParams();
+
+            q.set("lng", String(params.lng));
+            q.set("lat", String(params.lat));
+
+            if (params.km !== undefined) q.set("km", String(params.km));
+            if (params.page !== undefined) q.set("page", String(params.page));
+            if (params.size !== undefined) q.set("size", String(params.size));
+            if (params.search) q.set("search", params.search);
+
+            return `/api/request/matched?${q.toString()}`;
+        },
     },
     ADMIN: {
         USER: {
@@ -27,6 +55,15 @@ export const API = {
             GET_BY_ID: (id: string) => `/api/admin/users/${id}`,
             UPDATE: (id: string) => `/api/admin/users/${id}`,
             DELETE: (id: string) => `/api/admin/users/${id}`,
+        },
+        REQUEST: {
+            GET_REQUEST_HISTORY: (id: string) => `/api/admin/users/${id}/request-history`,
+            GET_REQUEST_STATS: "/api/admin/requests/stats",
+        },
+        HOSPITAL: {
+            ADD: "/api/admin/hospital",
+            UPDATE: (id: string) => `/api/admin/hospital/${id}`,
+            DELETE: (id: string) => `/api/admin/hospital/${id}`,
         }
     }
 }

@@ -17,6 +17,12 @@ const conditionColorMap: Record<string, string> = {
     critical: "bg-red-500",
 };
 
+const conditionHintMap: Record<string, string> = {
+    stable: "Stable: not very urgent but timely help supports recovery.",
+    urgent: "Urgent: immediate blood support is needed.",
+    critical: "Critical: life-threatening case requiring blood immediately.",
+};
+
 function timeAgo(dateString?: string) {
     if (!dateString) return "";
 
@@ -100,7 +106,12 @@ export default function HistoryCard({
         <>
             <div className="relative h-full rounded-2xl border bg-white p-6 pb-20 shadow-sm">
                 {/* Ribbon */}
-                <span className={clsx("absolute right-4 top-4 h-4 w-4 rounded-sm", ribbon)} />
+                <div className="group absolute right-4 top-4">
+                    <span className={clsx("block h-4 w-4 rounded-sm", ribbon)} />
+                    <div className="pointer-events-none absolute -top-2 right-0 z-20 hidden -translate-y-full whitespace-nowrap rounded-md border border-black/10 bg-white px-3 py-2 text-xs font-medium text-gray-800 shadow-md group-hover:block">
+                        {conditionHintMap[condition] || `Condition: ${request?.recipientCondition || "Unknown"}`}
+                    </div>
+                </div>
 
                 {/* Header */}
                 <div className="flex items-center gap-4">
@@ -188,11 +199,11 @@ export default function HistoryCard({
             {showConfirm && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-                    onClick={() => setShowConfirm(false)} // click outside closes
+                    onClick={() => setShowConfirm(false)}
                 >
                     <div
                         className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
-                        onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                        onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close button */}
                         <button
