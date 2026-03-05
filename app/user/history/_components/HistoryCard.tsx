@@ -199,11 +199,11 @@ export default function HistoryCard({
             {showConfirm && (
                 <div
                     className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4"
-                    onClick={() => setShowConfirm(false)} // click outside closes
+                    onClick={() => setShowConfirm(false)}
                 >
                     <div
                         className="relative w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl"
-                        onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+                        onClick={(e) => e.stopPropagation()}
                     >
                         {/* Close button */}
                         <button

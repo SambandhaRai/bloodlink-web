@@ -8,7 +8,6 @@ export const handleCreateRequest = async (requestData: any) => {
         const result = await createRequest(requestData);
 
         if (result.success) {
-            // Revalidate request-related pages
             revalidatePath("/user/requests");
 
             return {

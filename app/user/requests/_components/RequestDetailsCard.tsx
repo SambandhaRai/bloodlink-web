@@ -102,7 +102,7 @@ export default function RequestDetailsCard({ request }: { request: any }) {
                     </div>
                 </div>
 
-                {/* close (optional) */}
+                {/* close */}
                 <button
                     onClick={() => router.back()}
                     className="absolute right-5 top-5 rounded-md p-2 hover:bg-gray-100"
