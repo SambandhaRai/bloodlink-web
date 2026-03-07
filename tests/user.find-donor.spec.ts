@@ -72,12 +72,16 @@ test.describe("User find-donor page", () => {
 
     const hospitalInput = page.getByPlaceholder("Search hospital...");
     const noHospitals = page.getByText(/No hospitals available/i);
-    const hospitalError = page.getByText(/jwt malformed|failed|unauthorized|invalid token/i);
+    const hospitalError = page
+      .getByText(/Failed to fetch hospitals|jwt malformed|unauthorized|invalid token/i)
+      .first();
 
-    const hasHospitalInput = await hospitalInput.isVisible().catch(() => false);
-    const hasNoHospitals = await noHospitals.isVisible().catch(() => false);
-    const hasHospitalError = await hospitalError.isVisible().catch(() => false);
+    const state = await Promise.any([
+      hospitalInput.waitFor({ state: "visible", timeout: 6000 }).then(() => "input"),
+      noHospitals.waitFor({ state: "visible", timeout: 6000 }).then(() => "empty"),
+      hospitalError.waitFor({ state: "visible", timeout: 6000 }).then(() => "error"),
+    ]).catch(() => null);
 
-    expect(hasHospitalInput || hasNoHospitals || hasHospitalError).toBeTruthy();
+    expect(state).toBeTruthy();
   });
 });

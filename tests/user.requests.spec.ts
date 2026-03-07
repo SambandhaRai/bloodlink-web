@@ -1,5 +1,8 @@
 import { expect, test, type Page } from "@playwright/test";
 
+const REQUESTS_ERROR_TEXT =
+  /Failed to load requests|Fetch pending requests failed|jwt malformed|invalid token|unauthorized/i;
+
 async function setUserAuthCookie(page: Page) {
   await page.context().addCookies([
     {
@@ -14,16 +17,18 @@ async function setUserAuthCookie(page: Page) {
   ]);
 }
 
-async function isRequestsLoaded(page: Page) {
-  await page.waitForLoadState("networkidle");
+async function waitForRequestsState(page: Page): Promise<"loaded" | "error" | null> {
   const allRequestsTab = page.getByRole("button", { name: "All Requests" });
-  return allRequestsTab.isVisible().catch(() => false);
+  const requestsError = page.getByText(REQUESTS_ERROR_TEXT);
+
+  return Promise.any([
+    allRequestsTab.waitFor({ state: "visible", timeout: 6000 }).then(() => "loaded" as const),
+    requestsError.waitFor({ state: "visible", timeout: 6000 }).then(() => "error" as const),
+  ]).catch(() => null);
 }
 
 async function expectRequestsErrorState(page: Page) {
-  await expect(
-    page.getByText(/Failed to load requests|jwt malformed|invalid token|unauthorized/i)
-  ).toBeVisible();
+  await expect(page.getByText(REQUESTS_ERROR_TEXT)).toBeVisible();
 }
 
 test.describe("User requests page", () => {
@@ -47,7 +52,7 @@ test.describe("User requests page", () => {
   }) => {
     await page.goto("/user/requests");
 
-    if (await isRequestsLoaded(page)) {
+    if ((await waitForRequestsState(page)) === "loaded") {
       await expect(page.getByRole("button", { name: "Matched" })).toBeVisible();
       await expect(page.getByRole("button", { name: "All Requests" })).toBeVisible();
       await expect(
@@ -62,7 +67,7 @@ test.describe("User requests page", () => {
     await page.goto("/user/requests?tab=matched&km=10&page=1");
     await expect(page).toHaveURL(/tab=matched/);
 
-    if (await isRequestsLoaded(page)) {
+    if ((await waitForRequestsState(page)) === "loaded") {
       await expect(page.getByRole("button", { name: "Matched" })).toBeVisible();
     } else {
       await expectRequestsErrorState(page);
@@ -73,7 +78,7 @@ test.describe("User requests page", () => {
     await page.goto("/user/requests?tab=all&search=test&page=1");
     await expect(page).toHaveURL(/search=test/);
 
-    if (await isRequestsLoaded(page)) {
+    if ((await waitForRequestsState(page)) === "loaded") {
       await expect(
         page.getByPlaceholder("Search by blood group, hospital, patient...")
       ).toHaveValue("test");
